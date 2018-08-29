@@ -1,0 +1,8 @@
+ --require ts-node/register
+ --require source-map-support/register
+ --recursive
+ --timeout=16543
+ --reporter spec
+ --colors
+ --ui bdd
+ --exit
