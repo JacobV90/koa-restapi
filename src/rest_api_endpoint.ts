@@ -1,6 +1,8 @@
 import { Context, Middleware } from 'koa';
 import * as Router from 'koa-router';
-import { MiddlewareService, ServiceProvider } from './service_provider';
+import * as Compose from 'koa-compose';
+import { ResourceService } from './service';
+import { getRouter } from './router';
 
 export enum HttpAction {
   GET,
@@ -10,134 +12,92 @@ export enum HttpAction {
 }
 
 /**
- * The RestApiEndpoint class utilizes the Koa framework to handle all
- * requests, responses, and errors. All of the Ninsho rest api endpoints inherit from this class.
+ * This abstract class provides the contract for an api endpoint. It utilizes the Koa framework to handle all requests,
+ * responses, and errors. It it represented by a grouped stack of cascading middleware that share data using the
+ * context object.
  *
  * Koa context details:
  * https://koajs.com/#context
+ *
+ * The typed parameters are used to represent the contract of the api service
+ * - In: required request object
+ * - Out: the response object
+ *
+ * All rest api endpoints must inherit from this class.
  */
-export abstract class RestApiEndpoint<I, O> {
+export abstract class RestApiEndpoint<In, Out> {
+
+  public abstract routeName: string;
+
+  public abstract routePath: string;
+
+  public abstract httpAction: HttpAction;
 
   /**
-   * A before hook function can be set that will run before performing the requested
-   * auth0 operation. Data returned by this function will be added to the context state.
-   * e.g. (ctx.state.beforeHookData)
+   * A custom response handler function can be set to handle the response back to the client
    */
-  protected beforeHook?: MiddlewareService;
+  protected _responseHandler?: (ctx: Context) => Promise<void>;
 
   /**
-   * An after hook function can be set that will run after performing the requested auth0 operation.
-   * Data returned by the before hook can be accessed here. If specified, the after hook function
-   * must handle responses back to the client.
+   * The service provider for the inherited api endpoint class that performs the requested operation.
    */
-  protected afterHook?: MiddlewareService;
+  protected _resourceService: ResourceService;
 
   /**
-   * The key used to store data in the context object for this route
+   * A list containing middleware services that will run when this endpoint is invoked
    */
-  protected routeKey: string;
+  private _routeMiddleware: Middleware[];
 
-  private serviceProvider: ServiceProvider<any>;
-  private route: string;
-  private httpAction: HttpAction;
-  private routeMiddleware: Middleware[];
-
-  constructor(route: string, action: HttpAction, serviceProvider: ServiceProvider<any>) {
-    this.serviceProvider = serviceProvider;
-    this.routeKey = action + route;
-    this.route = route;
-    this.httpAction = action;
-    this.routeMiddleware = [
-      this.beforeHookService,
+  /**
+   *
+   * @param {string} route - the route name
+   * @param {HttpAction} action - the required Http Action
+   * @param {ResourceService<any>} resourceService - the required service provider to fulfill the request
+   */
+  constructor(resourceService: ResourceService) {
+    this._resourceService = resourceService;
+    this._routeMiddleware = [
       this.resourceService,
-      this.afterHookService,
       this.responseHandler
-    ]
+    ];
   }
 
-  public getRoute(): Middleware {
-    return this.configureRouter().routes();
+  public addMiddleware(...middleware: Middleware[]) {
+    this._routeMiddleware.unshift(...middleware);
   }
 
-  protected async responseHandler(ctx: Context): Promise<void> {
-    ctx.body = ctx.request.body;//(<any>ctx).routeKey.data as O;
+  public getMiddleware():Middleware[] {
+    return this._routeMiddleware;
   }
 
-  private beforeHookService = async (ctx: Context, next: () => Promise<void>): Promise<void> => {
-    if (this.beforeHook) {
-      try {
-        await RestApiEndpoint.runMiddleWareService(this.beforeHook, ctx);
-      } catch (error) {
-        ctx.throw(error.statusCode, error);
-      }
+  /**
+   * Adds data to the response body from the request body by default if no
+   * custom response handler is set.
+   */
+  private responseHandler = async(ctx: Context): Promise<void> => {
+    if (this._responseHandler) {
+      return await this._responseHandler(ctx);
     }
-    await next();
+    ctx.body = ctx.state.responseObj;
   };
 
+  /**
+   * Runs the resource service operation
+   */
   private resourceService = async (ctx: Context, next: () => Promise<void>): Promise<void> => {
     try {
-      await RestApiEndpoint.runMiddleWareService(this.serviceProvider, ctx);
+      await RestApiEndpoint.runMiddleWareService(this._resourceService, ctx);
     } catch (error) {
       ctx.throw(error.statusCode, error);
     }
     await next()
   };
 
-  private afterHookService = async (ctx: Context, next: () => Promise<void>): Promise<void> => {
-    if (this.afterHook) {
-      try {
-        await RestApiEndpoint.runMiddleWareService(this.afterHook, ctx);
-      } catch (error) {
-        ctx.throw(error.statusCode, error);
-      }
-    }
-    await next();
-  };
-
-  private static async runMiddleWareService(service: MiddlewareService, ctx: Context): Promise<void> {
+  private static async runMiddleWareService(service: ResourceService, ctx: Context): Promise<void> {
     try {
       await service.run(ctx);
     } catch (error) {
-      if (service.handleError){
-        throw await service.handleError(error);
-      }
-      throw error;
+      throw await service.handleError(error);
     }
   }
-
-  private configureRouter() {
-    const router: Router = new Router();
-    switch (this.httpAction) {
-      case HttpAction.DEL:
-        router.del(
-          this.route,
-          ...this.routeMiddleware
-        );
-        break;
-
-      case HttpAction.GET:
-        router.get(
-          this.route,
-          ...this.routeMiddleware
-        );
-        break;
-
-      case HttpAction.POST:
-        router.post(
-          this.route,
-          ...this.routeMiddleware
-        );
-        break;
-
-      case HttpAction.PATCH:
-        router.patch(
-          this.route,
-          ...this.routeMiddleware
-        );
-        break;
-    }
-    return router
-  }
-
-
 }

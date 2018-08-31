@@ -1,6 +1,6 @@
-import {User} from "./get_user_api";
+import { User } from '../users/interface/interfaces';
 
-export class UserService {
+export class Database {
   private db: User[] = [
     { id: '0', email: 'user0@gmail.com', firstName: 'User', lastName: 'Zero' },
     { id: '1', email: 'user1@gmail.com', firstName: 'User', lastName: 'One' },
