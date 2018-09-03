@@ -1,0 +1,13 @@
+language: node_js
+node_js:
+- 10.9.0
+cache:
+  yarn: true
+  directories:
+        - "node_modules"
+jobs:
+  include:
+  - stage: Test
+    name: Tests
+    script: yarn test
+after_success: yarn coverage
