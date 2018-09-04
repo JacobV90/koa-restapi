@@ -11,7 +11,8 @@
     "coverage": "nyc report --reporter=text-lcov | coveralls",
     "build": "tsc",
     "lint": "tslint ./src/**/*.ts ./test/**/*.spec.ts",
-    "parse": "ts-node parse-text.ts ./test/basic-crud/create_user_api.ts"
+    "parse": "ts-node ./src/api-parser.ts ./test/basic-crud/create_user_api.ts",
+    "file": "ts-node ./src/file-creater.ts"
   },
   "dependencies": {
     "@types/koa-mount": "^3.0.1",

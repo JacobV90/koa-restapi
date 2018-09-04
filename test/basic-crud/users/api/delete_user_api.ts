@@ -3,10 +3,10 @@ import { ResourceService } from "../../../../src/service";
 import { Context } from "koa";
 import { HttpError } from 'http-errors';
 import { Database } from "../../common/user_service";
-import { DeleteUser } from '../interface/interfaces';
+import {DeleteUser, DeleteUserResponse} from '../interface/interfaces';
 
 
-export class DeleteUserApi extends RestApiEndpoint<DeleteUser, boolean>{
+export class DeleteUserApi extends RestApiEndpoint<DeleteUser, DeleteUserResponse>{
 
   public routeName: string = 'Delete User';
   public routePath: string = '/users/:id';
