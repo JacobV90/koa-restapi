@@ -2,27 +2,34 @@ import * as fs from 'fs';
 import * as ts from 'typescript';
 import {resolve} from "path";
 import * as TJS from "typescript-json-schema";
-import {ApiEndpointDetails, SchemaDoc} from './types';
-let glob = require('glob-fs')({ gitignore: true });
+import chalk from 'chalk';
+import { ApiEndpointDetails, SchemaDoc} from './types';
+import { config } from './config';
 
-export const config = JSON.parse(fs.readFileSync('./.restapi.json', 'utf-8'));
+let glob = require('glob-fs')({ gitignore: true });
+const apiFiles = glob.readdirSync(config.include);
+const errors: string[] = [];
 const settings: TJS.PartialArgs = {
   required: true,
   ref: true,
   topRef: true
 };
-const program = TJS.getProgramFromFiles([resolve(config.models)]);
-const generator = TJS.buildGenerator(program, settings);
-const files = glob.readdirSync(config.include);
 
-let file: string;
 let apis: ApiEndpointDetails[] = [];
 let schemaDoc: SchemaDoc = {};
+  
 export class ApiParser {
 
   public static parse() {
-    files.forEach((filePath: string) => {
-      this.instrument(filePath, fs.readFileSync(filePath, 'utf-8'));
+    console.log(chalk.cyan('Parsing Files...'));
+    const program = TJS.getProgramFromFiles([resolve(config.models)]);
+    const generator = TJS.buildGenerator(program, settings);
+
+    let counter = 0;
+    apiFiles.forEach((filePath: string) => {
+      console.log(chalk.whiteBright(filePath))
+      let file = fs.readFileSync(filePath, 'utf-8');
+      ApiParser.instrument(filePath, file);
     });
     
     apis.forEach((api:any) => {
@@ -35,8 +42,12 @@ export class ApiParser {
         response: res_schema
       };
     });
-    
-    fs.writeFileSync('.api.schemas.json', JSON.stringify(schemaDoc), 'utf-8');
+  
+    fs.writeFileSync(config.outDir + 'api.schemas.json', JSON.stringify(schemaDoc), 'utf-8');
+    errors.forEach((error: string) => {
+      console.log(chalk.redBright(error));
+    })
+    console.log(chalk.bold.greenBright('Finished generating API json schemas'));
   }
   private static visit(node: ts.Node) {
     if (ts.isClassDeclaration(node)) {
@@ -48,24 +59,27 @@ export class ApiParser {
             };
             heritageClause.types.forEach((params: ts.ExpressionWithTypeArguments) => {
               let i = 0;
-              params.typeArguments.forEach((type: ts.Node) => {
-                i == 0 ?
-                  api.requestObjType = type.getText() :
-                  api.responseObjType = type.getText();
-                i++;
-              })
+              if (params.typeArguments) {
+                params.typeArguments.forEach((type: ts.Node) => {
+                  i == 0 ?
+                    api.requestObjType = type.getText() :
+                    api.responseObjType = type.getText();
+                  i++;
+                })
+                apis.push(api);
+              } else {
+                errors.push('RestApiEndpoint has no types for sub class: ' + api.name);
+              }
             });
-            apis.push(api);
           }
         });
       }
     }
-    node.forEachChild(this.visit);
+    node.forEachChild(ApiParser.visit);
   }
   
   private static instrument(fileName: string, sourceCode: string) {
     const sourceFile = ts.createSourceFile(fileName, sourceCode, ts.ScriptTarget.Latest, true);
-    this.visit(sourceFile);
-    file = fileName;
+    ApiParser.visit(sourceFile);
   }
 }
