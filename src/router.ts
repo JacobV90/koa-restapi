@@ -1,9 +1,9 @@
-import { HttpAction, RestApiEndpoint } from './rest_api_endpoint';
+import { RestApiEndpoint, HttpAction } from "./";
+import { Middleware } from 'koa';
 import * as Router from 'koa-router';
 import * as compose from 'koa-compose';
-import * as Koa from 'koa';
 
-export function getRouter(...apis: RestApiEndpoint<any, any>[]): Koa.Middleware {
+export function getRouter(...apis: RestApiEndpoint<any, any>[]): Middleware {
   const router: Router = new Router();
   for (let api of apis) {
     switch (api.httpAction) {

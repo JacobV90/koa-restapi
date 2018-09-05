@@ -12,3 +12,11 @@ export type Schema = {
 export type SchemaDoc = {
   [apiName: string]: Schema
 }
+
+export enum HttpAction {
+  GET,
+  PATCH,
+  POST,
+  DEL,
+}
+

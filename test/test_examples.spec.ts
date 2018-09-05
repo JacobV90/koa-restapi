@@ -107,5 +107,16 @@ describe('test_endpoint.spec.ts', function () {
       expect(response.body.firstName).to.equal('Admin');
       expect(response.body.lastName).to.equal('Two');
     });
+
+    it('should not update a user provided an error flag', async function () {
+      const response = await request(server)
+      .patch('/users/2')
+      .send({
+        firstName: 'Admin',
+        lastName: 'Two',
+        error: true
+      });
+      expect(response.status).to.equal(500);
+    });
   });
 });

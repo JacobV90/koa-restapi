@@ -1,28 +1,22 @@
 import * as fs from 'fs';
 import * as ts from 'typescript';
 import {resolve} from "path";
-let glob = require('glob-fs')({ gitignore: true });
 import * as TJS from "typescript-json-schema";
-import {ApiEndpointDetails, Schema, SchemaDoc} from './types';
+import {ApiEndpointDetails, SchemaDoc} from './types';
+let glob = require('glob-fs')({ gitignore: true });
 
-// optionally pass argument to schema generator
 const settings: TJS.PartialArgs = {
   required: true,
   ref: true,
   topRef: true
 };
+const program = TJS.getProgramFromFiles([resolve("./test/basic-crud/users/model/models.ts")]);
+const generator = TJS.buildGenerator(program, settings);
+const files = glob.readdirSync('./test/basic-crud/users/api/*.ts');
 
-// optionally pass ts compiler options
-const compilerOptions: TJS.CompilerOptions = {
-}
-
-let files = glob.readdirSync('./test/basic-crud/users/api/*.ts');
 let file: string;
 let apis: ApiEndpointDetails[] = [];
 let schemaDoc: SchemaDoc = {};
-
-const program = TJS.getProgramFromFiles([resolve("./test/basic-crud/users/interface/interfaces.ts")], compilerOptions);
-const generator = TJS.buildGenerator(program, settings);
 
 function visit(node: ts.Node) {
   if (ts.isClassDeclaration(node)) {
@@ -55,9 +49,6 @@ function instrument(fileName: string, sourceCode: string) {
   file = fileName;
 }
 
-
-
-
 files.forEach((filePath: string) => {
   instrument(filePath, fs.readFileSync(filePath, 'utf-8'));
 });
@@ -67,11 +58,10 @@ apis.forEach((api:any) => {
   const req_schema = generator.getSchemaForSymbol(api.requestObjType);
   const res_schema = generator.getSchemaForSymbol(api.responseObjType);
 
-  let schema: Schema = {
+  schemaDoc[api.name] = {
     request: req_schema,
     response: res_schema
   };
-  schemaDoc[api.name] = schema;
 });
 
-fs.writeFileSync('./.api-schemas.json', JSON.stringify(schemaDoc), 'utf-8');
+fs.writeFileSync('./.api.schemas.json', JSON.stringify(schemaDoc), 'utf-8');
