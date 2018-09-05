@@ -1,0 +1,19 @@
+{
+  "name": "basic-crud",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "koa": "^2.5.2"
+  },
+  "scripts": {
+    "test": "mocha --opts ./mocha.opts *.spec.ts",
+    "parse": "ts-node ../../src/api-parser.ts"
+  },
+  "devDependencies": {
+    "mocha": "^5.2.0",
+    "nyc": "^13.0.1",
+    "ts-node": "^7.0.1",
+    "tslint-config-airbnb": "^5.11.0"
+  }
+}

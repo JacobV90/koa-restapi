@@ -6,8 +6,8 @@ import { expect } from 'chai';
 import * as request from 'supertest';
 import * as Koa from 'koa';
 import * as bodyParser from 'koa-bodyparser';
-import { Database } from "./basic-crud/common/user_service";
-import { getRouter } from '../src/router';
+import { Database } from "./common/user_service";
+import { getRouter } from '../../src/router';
 import {
   CreateUserApi,
   CreateUserService,
@@ -17,7 +17,7 @@ import {
   UpdateUserApi,
   GetUserApi,
   GetUserService
-} from "./basic-crud/users/";
+} from "./users/";
 
 describe('test_endpoint.spec.ts', function () {
   this.timeout(5000);

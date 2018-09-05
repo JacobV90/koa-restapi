@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es2016",
+    "noImplicitAny": true,
+    "outDir": "./dist",
+    "declaration": true,
+    "moduleResolution": "node"
+  },
+  "include": [
+    "./test_examples.spec.ts"
+  ],
+}

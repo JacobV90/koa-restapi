@@ -1,0 +1,5 @@
+{
+    "include": "./users/api/*.ts",
+    "outDir": "./",
+    "models": "./users/model/models.ts"
+}
