@@ -4,8 +4,6 @@
     <list default="true" id="816a2eb8-c25f-4780-9dbe-9b84e46c0761" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change beforePath="$PROJECT_DIR$/.travis.yml" afterPath="$PROJECT_DIR$/.travis.yml" />
-      <change beforePath="$PROJECT_DIR$/package.json" afterPath="$PROJECT_DIR$/package.json" />
-      <change beforePath="$PROJECT_DIR$/src/api-parser.ts" afterPath="$PROJECT_DIR$/src/api-parser.ts" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -509,7 +507,7 @@
       <workItem from="1535661995856" duration="447000" />
       <workItem from="1535737287579" duration="732000" />
       <workItem from="1535776664208" duration="11610000" />
-      <workItem from="1536084468757" duration="22239000" />
+      <workItem from="1536084468757" duration="22328000" />
     </task>
     <servers />
   </component>
@@ -546,7 +544,7 @@
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="39950000" />
+    <option name="totallyTimeSpent" value="40039000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1920" height="1080" extended-state="0" />

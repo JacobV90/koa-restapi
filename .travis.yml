@@ -9,6 +9,6 @@ jobs:
   include:
   - stage: Test
     name: Tests
-    script: yarn parse
     script: yarn test
+before_script: yarn parse
 after_success: yarn coverage
