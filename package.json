@@ -10,28 +10,22 @@
   },
   "scripts": {
     "docs": "typedoc --options ./typedoc.js",
-    "test": "nyc mocha test/*.spec.ts",
-    "coverage": "nyc report --reporter=text-lcov | coveralls",
     "build": "tsc",
-    "lint": "tslint ./src/**/*.ts ./test/**/*.spec.ts",
-    "parse": "ts-node ./src/api-parser.ts"
+    "lint": "tslint ./src/**/*.ts ./examples/**/*.spec.ts"
   },
   "dependencies": {
-    "@types/chalk": "^2.2.0",
-    "@types/koa-mount": "^3.0.1",
-    "@types/progress": "^2.0.1",
     "ajv": "^6.5.3",
     "chalk": "^2.4.1",
     "glob-fs": "^0.1.7",
     "koa": "^2.5.2",
     "koa-compose": "^4.1.0",
-    "koa-mount": "^3.0.0",
     "koa-router": "^7.4.0",
-    "progress": "^2.0.0",
-    "typescript-json-schema": "^0.32.0",
-    "typescript-parser": "^2.5.0"
+    "typescript-json-schema": "^0.32.0"
   },
   "devDependencies": {
+    "@types/chalk": "^2.2.0",
+    "@types/koa-mount": "^3.0.1",
+    "@types/progress": "^2.0.1",
     "@types/chai": "^4.1.4",
     "@types/chance": "^1.0.1",
     "@types/http-errors": "^1.6.1",
@@ -50,33 +44,10 @@
     "nyc": "^12.0.2",
     "sinon": "^6.1.5",
     "supertest": "^3.1.0",
-    "ts-file-parser": "^0.0.12",
     "ts-node": "^7.0.1",
-    "ts-structure-parser": "^0.0.17",
     "tslint": "^5.11.0",
     "tslint-config-airbnb": "^5.10.0",
     "typedoc": "^0.12.0",
     "typescript": "^3.0.1"
-  },
-  "nyc": {
-    "include": [
-      "src/**/*.ts"
-    ],
-    "exclude": [
-      "dist"
-    ],
-    "extension": [
-      ".js",
-      ".ts"
-    ],
-    "require": [
-      "ts-node/register"
-    ],
-    "reporter": [
-      "text-summary",
-      "html"
-    ],
-    "sourceMap": true,
-    "instrument": true
   }
 }

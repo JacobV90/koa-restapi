@@ -117,6 +117,7 @@ describe('test_endpoint.spec.ts', function () {
         error: true
       });
       expect(response.status).to.equal(500);
+      expect(response.text).to.equal('Internal Server Error');
     });
   });
 });
