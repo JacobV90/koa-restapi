@@ -3,7 +3,8 @@ import { ResourceService } from './service';
 import * as Ajv from 'ajv';
 import { resolve } from 'path';
 import { SchemaDoc, HttpAction } from './types';
-const apiSchema: SchemaDoc = require(resolve(process.cwd(), './.api.schemas.json'));
+import { config } from './config';
+const apiSchema: SchemaDoc = require(resolve(config.outDir, './api.schemas.json'));
 
 /**
  * This abstract class provides the contract for an api endpoint. It utilizes the Koa framework to handle all requests,
