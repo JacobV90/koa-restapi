@@ -1,13 +1,11 @@
-import { RestApiEndpoint, HttpAction } from "../../../../src/rest_api_endpoint";
-import { ResourceService} from "../../../../src/service";
+import { RestApiEndpoint, ResourceService, HttpAction } from "../../../../src";
 import { Context } from "koa";
 import { HttpError } from 'http-errors';
 import { Database } from "../../common/user_service";
-import { CreateUser, User } from '../interface/interfaces';
+import { CreateUser, User } from '../model/models';
 
 export class CreateUserApi extends RestApiEndpoint<CreateUser, User>{
 
-  public routeName: string = 'Create User';
   public routePath: string = '/users';
   public httpAction: HttpAction = HttpAction.POST;
 

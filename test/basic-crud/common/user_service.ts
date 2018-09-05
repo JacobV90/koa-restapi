@@ -1,4 +1,4 @@
-import { User, DeleteUserResponse } from '../users/interface/interfaces';
+import { User, DeleteUserResponse } from '../users/model/models';
 
 export class Database {
   private db: User[] = [
@@ -31,13 +31,16 @@ export class Database {
     return {result: false};
   }
 
-  public async updateUser(user: User): Promise<User> {
+  public async updateUser(user: User): Promise<any> {
+    if (user.error) {
+      return;
+    }
     for (const _user of this.db) {
       if (_user.id === user.id) {
         let index = this.db.indexOf(_user);
         Object.assign(this.db[index], user);
         return this.db[index];
-      }
+        }
     }
     throw new Error('user does not exist');
   }

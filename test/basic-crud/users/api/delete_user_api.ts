@@ -1,14 +1,11 @@
-import { RestApiEndpoint, HttpAction } from "../../../../src/rest_api_endpoint";
-import { ResourceService } from "../../../../src/service";
+import { RestApiEndpoint, ResourceService, HttpAction } from "../../../../src";
 import { Context } from "koa";
 import { HttpError } from 'http-errors';
 import { Database } from "../../common/user_service";
-import {DeleteUser, DeleteUserResponse} from '../interface/interfaces';
-
+import { DeleteUser, DeleteUserResponse } from '../model/models';
 
 export class DeleteUserApi extends RestApiEndpoint<DeleteUser, DeleteUserResponse>{
 
-  public routeName: string = 'Delete User';
   public routePath: string = '/users/:id';
   public httpAction: HttpAction = HttpAction.DEL;
 

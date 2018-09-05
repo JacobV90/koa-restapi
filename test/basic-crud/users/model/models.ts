@@ -7,6 +7,8 @@ export type User = {
   email: string;
   firstName: string;
   lastName: string;
+  // For increasing test coverage
+  error?: boolean;
 }
 
 export type DeleteUser = {

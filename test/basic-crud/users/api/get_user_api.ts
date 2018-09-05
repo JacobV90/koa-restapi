@@ -1,13 +1,11 @@
-import { RestApiEndpoint, HttpAction } from "../../../../src/rest_api_endpoint";
-import { ResourceService } from "../../../../src/service";
+import { RestApiEndpoint, ResourceService, HttpAction } from "../../../../src";
 import { Context } from "koa";
 import { HttpError } from 'http-errors';
 import { Database } from "../../common/user_service";
-import { GetUser, User } from '../interface/interfaces';
+import { GetUser, User } from '../model/models';
 
 export class GetUserApi extends RestApiEndpoint<GetUser, User>{
 
-  public routeName: string = 'Get User';
   public routePath: string = '/users/:id';
   public httpAction: HttpAction = HttpAction.GET;
 
