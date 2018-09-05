@@ -11,26 +11,19 @@ export class UpdateUserApi extends RestApiEndpoint<UpdateUser, User>{
   public routePath: string = '/users/:id';
   public httpAction: HttpAction = HttpAction.PATCH;
 
-  constructor(service: ResourceService) {
-    super(service);
-    this.addMiddleware(this.fetchMetadata)
-  }
-
-  private async fetchMetadata(ctx: Context, next: () => Promise<void>): Promise<void> {
-    ctx.state.requestObj = ctx.request.body;
-    ctx.state.requestObj.id = ctx.params.id;
-    await next();
+  constructor(service: ResourceService<User>) {
+    super(service, 'UpdateUserApi');
   }
 }
 
-export class UpdateUserService extends ResourceService {
+export class UpdateUserService extends ResourceService<User> {
 
   constructor(userService: Database) {
     super(userService);
   }
 
   public async run(ctx: Context){
-    ctx.state.responseObj = await this.provider.updateUser(ctx.state.requestObj);
+    return await this.provider.updateUser(ctx.params);
   }
 
   public async handleError(error: Error) {

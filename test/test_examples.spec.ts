@@ -50,6 +50,12 @@ describe('test_endpoint.spec.ts', function () {
       expect(response.status).to.equal(200);
       expect(response.body.id).to.equal('0');
     });
+
+    it('should not get a user provided an invalid user id', async function () {
+      const response = await request(server).get('/users/fgss');
+      expect(response.status).to.equal(400);
+      expect(response.text).to.equal('user does not exist');
+    });
   });
 
   describe('Create User Api', function () {
@@ -65,13 +71,27 @@ describe('test_endpoint.spec.ts', function () {
       expect(response.body.lastName).to.equal('Four');
       expect(response.body.email).to.equal('user4@gmail.com');
     });
+
+    it('should not create a user provided no email', async function () {
+      const response = await request(server)
+      .post('/users')
+      .send({});
+      expect(response.status).to.equal(400);
+      expect(response.text).to.equal('Bad Request');
+    });
   });
 
   describe('Delete User Api', function () {
     it('should delete a user provided a valid user id', async function () {
       const response = await request(server).del('/users/2');
       expect(response.status).to.equal(200);
-      expect(response.body).to.equal(true);
+      expect(response.body.result).to.equal(true);
+    });
+
+    it('should not delete a user provided an invalid user id', async function () {
+      const response = await request(server).del('/users/0asdf');
+      expect(response.status).to.equal(200);
+      expect(response.body.result).to.equal(false);
     });
   });
 

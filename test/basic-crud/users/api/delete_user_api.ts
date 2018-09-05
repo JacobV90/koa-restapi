@@ -12,19 +12,19 @@ export class DeleteUserApi extends RestApiEndpoint<DeleteUser, DeleteUserRespons
   public routePath: string = '/users/:id';
   public httpAction: HttpAction = HttpAction.DEL;
 
-  constructor(service: ResourceService) {
-    super(service);
+  constructor(service: ResourceService<DeleteUserResponse>) {
+    super(service, 'DeleteUserApi');
   }
 }
 
-export class DeleteUserService extends ResourceService {
+export class DeleteUserService extends ResourceService<DeleteUserResponse> {
 
   constructor(database: Database) {
     super(database);
   }
 
   public async run(ctx: Context){
-    ctx.state.responseObj = await this.provider.deleteUser(ctx.params.id);
+    return await this.provider.deleteUser(ctx.params.id);
   }
 
   public async handleError(error: Error) {

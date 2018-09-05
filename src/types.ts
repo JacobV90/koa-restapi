@@ -5,8 +5,8 @@ export type ApiEndpointDetails = {
 }
 
 export type Schema = {
-  request: string;
-  response: string;
+  request: object
+  response: object
 }
 
 export type SchemaDoc = {

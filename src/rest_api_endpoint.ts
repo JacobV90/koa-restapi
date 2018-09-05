@@ -1,8 +1,8 @@
 import { Context, Middleware } from 'koa';
-import * as Router from 'koa-router';
-import * as Compose from 'koa-compose';
 import { ResourceService } from './service';
-import { getRouter } from './router';
+import * as Ajv from 'ajv';
+import {SchemaDoc} from './types';
+const apiSchema: SchemaDoc = require('../.api-schemas.json');
 
 export enum HttpAction {
   GET,
@@ -41,34 +41,57 @@ export abstract class RestApiEndpoint<In, Out> {
   /**
    * The service provider for the inherited api endpoint class that performs the requested operation.
    */
-  protected _resourceService: ResourceService;
+  protected _resourceService: ResourceService<Out>;
 
   /**
    * A list containing middleware services that will run when this endpoint is invoked
    */
-  private _routeMiddleware: Middleware[];
+  private _middlewareStack: Middleware[];
 
-  /**
-   *
-   * @param {string} route - the route name
-   * @param {HttpAction} action - the required Http Action
-   * @param {ResourceService<any>} resourceService - the required service provider to fulfill the request
-   */
-  constructor(resourceService: ResourceService) {
+  private _requestValidator: Ajv.ValidateFunction;
+
+  private _responseValidator: Ajv.ValidateFunction;
+
+  constructor(resourceService: ResourceService<Out>, api_name: string) {
+    const validator = new Ajv();
     this._resourceService = resourceService;
-    this._routeMiddleware = [
+    this._requestValidator = validator.compile(apiSchema[api_name].request);
+    this._responseValidator = validator.compile(apiSchema[api_name].response);
+    this._middlewareStack = [
+      this.requestValidation,
       this.resourceService,
       this.responseHandler
     ];
   }
 
   public addMiddleware(...middleware: Middleware[]) {
-    this._routeMiddleware.unshift(...middleware);
+    this._middlewareStack.splice(1, 0, ...middleware);
   }
 
   public getMiddleware():Middleware[] {
-    return this._routeMiddleware;
+    return this._middlewareStack;
   }
+
+  protected requestValidationErrorHandler(ctx: Context, errors: Ajv.ErrorParameters ) {
+    ctx.throw(400, errors)
+  }
+
+  protected responseValidationErrorHandler(ctx: Context, errors: Ajv.ErrorParameters ) {
+    ctx.throw(500, errors)
+  }
+
+  /**
+   * Adds data to the response body from the request body by default if no
+   * custom response handler is set.
+   */
+  private requestValidation = async (ctx: Context, next: () => Promise<void>): Promise<void> => {
+    ctx.params = {...ctx.params, ...ctx.request.body};
+    const isValid = this._requestValidator(ctx.params);
+    if (!isValid)
+      this.requestValidationErrorHandler(ctx, this._requestValidator.errors);
+
+    await next()
+  };
 
   /**
    * Adds data to the response body from the request body by default if no
@@ -78,7 +101,7 @@ export abstract class RestApiEndpoint<In, Out> {
     if (this._responseHandler) {
       return await this._responseHandler(ctx);
     }
-    ctx.body = ctx.state.responseObj;
+    ctx.body = ctx.state.response;
   };
 
   /**
@@ -86,18 +109,25 @@ export abstract class RestApiEndpoint<In, Out> {
    */
   private resourceService = async (ctx: Context, next: () => Promise<void>): Promise<void> => {
     try {
-      await RestApiEndpoint.runMiddleWareService(this._resourceService, ctx);
+      ctx.state.response = await this.runResourceService(this._resourceService, ctx);
     } catch (error) {
       ctx.throw(error.statusCode, error);
     }
     await next()
   };
 
-  private static async runMiddleWareService(service: ResourceService, ctx: Context): Promise<void> {
+  private async runResourceService(service: ResourceService<Out>, ctx: Context): Promise<Out> {
+    let responseData: Out;
     try {
-      await service.run(ctx);
+      responseData = await service.run(ctx);
     } catch (error) {
       throw await service.handleError(error);
     }
+    console.log(responseData);
+    const isValid = this._responseValidator(responseData);
+    if (!isValid)
+      this.responseValidationErrorHandler(ctx, this._responseValidator.errors);
+
+    return responseData;
   }
 }
