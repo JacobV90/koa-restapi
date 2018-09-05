@@ -12,27 +12,26 @@ export class CreateUserApi extends RestApiEndpoint<CreateUser, User>{
   public httpAction: HttpAction = HttpAction.POST;
 
   constructor(service: CreateUserService) {
-    super(service);
+    super(service, 'CreateUserApi');
     this.addMiddleware(this.fetchMetadata);
   }
 
   private async fetchMetadata(ctx: Context, next: () => Promise<void>): Promise<void> {
-      ctx.state.requestObj = ctx.request.body;
-      ctx.state.requestObj.id = '4';
-      ctx.state.requestObj.firstName = 'User';
-      ctx.state.requestObj.lastName = 'Four';
+      ctx.params.id = '4';
+      ctx.params.firstName = 'User';
+      ctx.params.lastName = 'Four';
       await next();
   }
 }
 
-export class CreateUserService extends ResourceService {
+export class CreateUserService extends ResourceService<User> {
 
   constructor(userService: Database) {
     super(userService);
   }
 
   public async run(ctx: Context){
-    ctx.state.responseObj = await this.provider.createUser(ctx.state.requestObj);
+    return await this.provider.createUser(ctx.params);
   }
 
   public async handleError(error: Error) {

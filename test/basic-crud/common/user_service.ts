@@ -1,4 +1,4 @@
-import { User } from '../users/interface/interfaces';
+import { User, DeleteUserResponse } from '../users/interface/interfaces';
 
 export class Database {
   private db: User[] = [
@@ -20,23 +20,23 @@ export class Database {
     return user;
   }
 
-  public async deleteUser(id: string): Promise<boolean> {
+  public async deleteUser(id: string): Promise<DeleteUserResponse> {
     for (const user of this.db) {
       if (user.id === id) {
         let index = this.db.indexOf(user);
         this.db.slice(index,1);
-        return true;
+        return {result: true};
       }
     }
-    return false;
+    return {result: false};
   }
 
   public async updateUser(user: User): Promise<User> {
     for (const _user of this.db) {
       if (_user.id === user.id) {
         let index = this.db.indexOf(_user);
-        this.db[index] = user;
-        return user;
+        Object.assign(this.db[index], user);
+        return this.db[index];
       }
     }
     throw new Error('user does not exist');

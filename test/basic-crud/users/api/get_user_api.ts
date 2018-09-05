@@ -11,19 +11,19 @@ export class GetUserApi extends RestApiEndpoint<GetUser, User>{
   public routePath: string = '/users/:id';
   public httpAction: HttpAction = HttpAction.GET;
 
-  constructor(service: ResourceService) {
-    super(service);
+  constructor(service: ResourceService<User>) {
+    super(service, 'GetUserApi');
   }
 }
 
-export class GetUserService extends ResourceService {
+export class GetUserService extends ResourceService<User>{
 
   constructor(userService: Database) {
     super(userService);
   }
 
   public async run(ctx: Context){
-    ctx.state.responseObj = await this.provider.getUser(ctx.params.id);
+    return await this.provider.getUser(ctx.params.id);
   }
 
   public async handleError(error: Error) {

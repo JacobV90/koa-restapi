@@ -68,8 +68,8 @@ apis.forEach((api:any) => {
   const res_schema = generator.getSchemaForSymbol(api.responseObjType);
 
   let schema: Schema = {
-    request: JSON.stringify(req_schema),
-    response: JSON.stringify(res_schema)
+    request: req_schema,
+    response: res_schema
   };
   schemaDoc[api.name] = schema;
 });
