@@ -7,7 +7,8 @@
     "koa": "^2.5.2"
   },
   "scripts": {
-    "test": "mocha --opts ./mocha.opts *.spec.ts",
+    "test": "nyc mocha --opts ./mocha.opts *.spec.ts",
+    "coverage": "nyc report --reporter=text-lcov | coveralls",
     "parse": "restapi"
   },
   "devDependencies": {
@@ -15,5 +16,22 @@
     "nyc": "^13.0.1",
     "ts-node": "^7.0.1",
     "tslint-config-airbnb": "^5.11.0"
+  },
+  "nyc": {
+    "include": [
+      "*.ts"
+    ],
+    "extension": [
+      ".ts"
+    ],
+    "require": [
+      "ts-node/register"
+    ],
+    "reporter": [
+      "text-summary",
+      "html"
+    ],
+    "sourceMap": true,
+    "instrument": true
   }
 }
