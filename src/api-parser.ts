@@ -20,7 +20,7 @@ let schemaDoc: SchemaDoc = {};
 
 function visit(node: ts.Node) {
   if (ts.isClassDeclaration(node)) {
-    if(node.heritageClauses /*&& node.heritageClauses[0].types && node.heritageClauses[0].types[0].typeArguments*/) {
+    if(node.heritageClauses) {
       node.heritageClauses.forEach((heritageClause: ts.HeritageClause) => {
         if (heritageClause.token === 85 && heritageClause.getText().includes('RestApiEndpoint')) {
           let api: any = {
