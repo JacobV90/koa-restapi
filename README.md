@@ -124,4 +124,4 @@ And thats all to it! The framework has created a request and response validator 
 
 ### **DO NOT** provide a primitive type for a 'RestApiEndpoint' class
 - It will cause the API parser to throw an error. Instead use a type alias
--  e.g. `type Response = { result: boolean }`
+-  e.g. `type Response = boolean`
