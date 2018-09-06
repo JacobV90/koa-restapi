@@ -14,9 +14,9 @@ export type SchemaDoc = {
 }
 
 export enum HttpAction {
-  GET,
-  PATCH,
-  POST,
-  DEL,
+  GET = "GET",
+  PATCH = "PATCH",
+  POST = "POST",
+  DEL = "DEL",
 }
 
