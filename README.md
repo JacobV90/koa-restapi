@@ -7,7 +7,7 @@ A simple, lightweight, robust and versatile framework for building REST Api serv
 ## Usage
 Install and save the koa-restapi as a dependency
 ```
-yarn add koa-restapi
+yarn add @ninsho/koa-restapi
 ```
 Write an api endpoint class that extends the RestApiEndpoint abstract class.
 - CreateUser - the http request type
@@ -73,9 +73,9 @@ server = app.listen(3000);
 Next create a `.restapi.json` file in the same directory as the package.json
 ```
 {
-    "include": "./users/api/*.ts", // api files
-    "outDir": "./",
-    "models": "./users/model/models.ts" // model files
+    "include": "./users/api/*.ts",       // api files to parse
+    "models": "./users/model/models.ts", // model files to parse
+    "outDir": "./"                       // output location for the api.schemas.json file
 }
 ```
 
