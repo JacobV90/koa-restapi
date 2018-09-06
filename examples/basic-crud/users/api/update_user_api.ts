@@ -5,17 +5,15 @@ import { Database } from "../../common/user_service";
 import { UpdateUser, User } from '../model/models';
 
 export class UpdateUserApi extends RestApiEndpoint<UpdateUser, User>{
-
   public routePath: string = '/users/:id';
   public httpAction: HttpAction = HttpAction.PATCH;
 
-  constructor(service: ResourceService<User>) {
+  constructor(service: UpdateUserService) {
     super(service, 'UpdateUserApi');
   }
 }
 
-export class UpdateUserService extends ResourceService<User> {
-
+export class UpdateUserService extends ResourceService<Database, User> {
   constructor(userService: Database) {
     super(userService);
   }

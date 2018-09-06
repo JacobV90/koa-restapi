@@ -5,17 +5,15 @@ import { Database } from "../../common/user_service";
 import { DeleteUser, DeleteUserResponse } from '../model/models';
 
 export class DeleteUserApi extends RestApiEndpoint<DeleteUser, DeleteUserResponse>{
-
   public routePath: string = '/users/:id';
   public httpAction: HttpAction = HttpAction.DEL;
 
-  constructor(service: ResourceService<DeleteUserResponse>) {
+  constructor(service: DeleteUserService) {
     super(service, 'DeleteUserApi');
   }
 }
 
-export class DeleteUserService extends ResourceService<DeleteUserResponse> {
-
+export class DeleteUserService extends ResourceService<Database,DeleteUserResponse> {
   constructor(database: Database) {
     super(database);
   }
