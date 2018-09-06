@@ -34,6 +34,8 @@ export function getRouter(...apis: RestApiEndpoint<any, any>[]): Middleware {
           ...api.getMiddleware()
         );
         break;
+      default:
+        console.log("Http Action not supported: ", api.httpAction);
     }
   }
   return compose([router.routes(), router.allowedMethods()]);

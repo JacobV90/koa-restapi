@@ -1,10 +1,28 @@
 {
-  "name": "koa-restapi",
-  "version": "1.0.0",
+  "name": "@ninsho/koa-restapi",
+  "version": "1.0.1",
   "main": "./dist/index.js",
   "repository": "git@github.com:JacobV90/koa-restapi.git",
   "author": "Jacob Veal <jacobveal90@gmail.com>",
   "license": "MIT",
+  "description": "A simple, lightweight, robust and versatile framework for building REST Api services on top of Koa with the developer experience at heart.",
+  "keywords": [
+    "koa",
+    "typescript",
+    "rest api",
+    "clean code",
+    "nodejs",
+    "backend",
+    "koa-middleware",
+    "validator",
+    "json schema",
+    "architecture",
+    "microservices",
+    "resuable-components"
+  ],
+  "engine": {
+    "node": ">=7.6"
+  },
   "bin": {
     "restapi": "./dist/restapi.cli.js"
   },
@@ -13,11 +31,13 @@
     "build": "tsc",
     "lint": "tslint ./src/**/*.ts ./examples/**/*.spec.ts"
   },
+  "peerDependencies": {
+    "koa": "^2.5.2"
+  },
   "dependencies": {
     "ajv": "^6.5.3",
     "chalk": "^2.4.1",
     "glob-fs": "^0.1.7",
-    "koa": "^2.5.2",
     "koa-compose": "^4.1.0",
     "koa-router": "^7.4.0",
     "typescript-json-schema": "^0.32.0"

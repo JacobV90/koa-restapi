@@ -1,0 +1,13 @@
+src/
+examples/
+coverage/
+.vscode/
+.idea/
+.nyc_output/
+.travis.yml
+koa-restapi.iml
+tsconfig.json
+tslint.json
+typedoc.js
+yarn.lock
+yarn-error.log
