@@ -22,6 +22,8 @@ export class ApiParser {
 
   public static parse() {
     console.log(chalk.cyan('Parsing Files...'));
+    console.log('\r');
+
     const program = TJS.getProgramFromFiles([resolve(config.models)]);
     const generator = TJS.buildGenerator(program, settings);
 
@@ -47,7 +49,10 @@ export class ApiParser {
     errors.forEach((error: string) => {
       console.log(chalk.redBright(error));
     })
+    console.log('\r');
     console.log(chalk.bold.greenBright('Finished generating API json schemas'));
+    console.log('\r');
+
   }
   private static visit(node: ts.Node) {
     if (ts.isClassDeclaration(node)) {

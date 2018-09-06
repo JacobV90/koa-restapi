@@ -5,7 +5,6 @@ import { Database } from "../../common/user_service";
 import { CreateUser, User } from '../model/models';
 
 export class CreateUserApi extends RestApiEndpoint<CreateUser, User>{
-
   public routePath: string = '/users';
   public httpAction: HttpAction = HttpAction.POST;
 
@@ -22,8 +21,7 @@ export class CreateUserApi extends RestApiEndpoint<CreateUser, User>{
   }
 }
 
-export class CreateUserService extends ResourceService<User> {
-
+export class CreateUserService extends ResourceService<Database, User>{
   constructor(userService: Database) {
     super(userService);
   }

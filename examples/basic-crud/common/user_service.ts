@@ -31,7 +31,7 @@ export class Database {
     return {result: false};
   }
 
-  public async updateUser(user: User): Promise<any> {
+  public async updateUser(user: User): Promise<User> {
     if (user.error) {
       return;
     }

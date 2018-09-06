@@ -5,16 +5,15 @@ import { Database } from "../../common/user_service";
 import { GetUser, User } from '../model/models';
 
 export class GetUserApi extends RestApiEndpoint<GetUser, User>{
-
   public routePath: string = '/users/:id';
   public httpAction: HttpAction = HttpAction.GET;
 
-  constructor(service: ResourceService<User>) {
+  constructor(service: GetUserService) {
     super(service, 'GetUserApi');
   }
 }
 
-export class GetUserService extends ResourceService<User>{
+export class GetUserService extends ResourceService<Database,User>{
 
   constructor(userService: Database) {
     super(userService);

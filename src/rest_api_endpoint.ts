@@ -35,7 +35,7 @@ export abstract class RestApiEndpoint<In, Out> {
   /**
    * The service provider for the inherited api endpoint class that performs the requested operation.
    */
-  private _resourceService: ResourceService<Out>;
+  private _resourceService: ResourceService<any, Out>;
 
   /**
    * A list containing middleware services that will run when this endpoint is invoked
@@ -99,7 +99,7 @@ export abstract class RestApiEndpoint<In, Out> {
     await next()
   };
 
-  constructor(resourceService: ResourceService<Out>, api_name: string) {
+  constructor(resourceService: ResourceService<any, Out>, api_name: string) {
     const validator = new Ajv();
     this._resourceService = resourceService;
     this._requestValidator = validator.compile(apiSchema[api_name].request);
@@ -119,7 +119,7 @@ export abstract class RestApiEndpoint<In, Out> {
     return this._middlewareStack;
   }
 
-  private async runResourceService(service: ResourceService<Out>, ctx: Context): Promise<Out> {
+  private async runResourceService(service: ResourceService<any, Out>, ctx: Context): Promise<Out> {
     let responseData: Out;
     try {
       responseData = await service.run(ctx);
